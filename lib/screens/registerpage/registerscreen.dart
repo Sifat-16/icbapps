@@ -105,13 +105,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
               UserCredential x = await fireBase.signup(username.text.trim()+"@gmail.com", password.text.trim());
 
               if(x!=null){
-                ModelUser modelUser = ModelUser(username: username.text.trim(), email: email.text.trim(),fullName: fullname.text.trim(), country: country.text.trim(), refarralId: refarralid.text.trim(), uid: x.user!.uid);
+                ModelUser modelUser = ModelUser(username: username.text.trim(), email: email.text.trim(),fullName: fullname.text.trim(),  refarralId: refarralid.text.trim(), uid: x.user!.uid);
                 if(imagefile!=null){
                   final profileImage = await fireBase.uploadImage(imagefile!, fileName!);
                   modelUser.profileImage=profileImage;
                 }
-                final c = await fireBase.createProfile(modelUser);
+                final c = await fireBase.createProfile(modelUser, refarralid.text.trim());
                 if(c==true){
+                  await fireBase.addRefaralToTeam(modelUser, refarralid.text.trim());
                   Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context)=>HomeScreen()));
                 }
 
