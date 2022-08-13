@@ -6,6 +6,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:icbapps/models/ModelUser.dart';
 
+import '../../models/WithdrawModel.dart';
+
 class FireBase{
   final auth = FirebaseAuth.instance;
   final storage = FirebaseStorage.instance;
@@ -48,6 +50,10 @@ class FireBase{
 
   }
 
+  Stream<ModelUser> myProfileStream(){
+    return store.collection("userProfile").doc(auth.currentUser!.uid).snapshots().map((event) => ModelUser.fromJson(event.data()!));
+  }
+
   addRefaralToTeam(ModelUser modelUser, String refarral) async{
 
     if(refarral==null||refarral.length<6){
@@ -68,22 +74,53 @@ class FireBase{
             });
             x.add(modelUser.uid!);
           }
+          double ref = 0;
           if(l.data()!["balance"]!=null){
             point=l.data()!["balance"];
+            ref = l.data()!["reference"];
+            ref+=500;
             point+=500;
           }
           final k = await z.update({
             "teamMember":x,
-            "balance":point
+            "balance":point,
+            "reference":ref
           });
         });
       }catch(e){
         print("went wrong");
       }
-
-
     }
 
+  }
+
+  rewardUser(ModelUser modelUser)async{
+
+    final x = store.collection("userProfile").doc(modelUser.uid);
+    final y = await x.get();
+    double l = 0;
+    if(y.data()!["balance"]!=null){
+      l = y.data()!["balance"];
+      l+=500;
+    }else{
+      l+=500;
+    }
+
+    await x.update({
+      "balance":l
+    }).onError((error, stackTrace) => false);
+
+    return true;
+
+  }
+
+  Future<bool> withdrawRequest(WithdrawModel withdrawModel)async{
+    final x = await store.collection("withdraws").doc().set(withdrawModel.toJson()).onError((error, stackTrace) => false);
+    return true;
+  }
+
+  Stream<List<WithdrawModel>> allwithdraws(ModelUser modelUser){
+    return store.collection("withdraws").where("uid", isEqualTo: modelUser.uid).snapshots().map((event) => event.docs.map((e) => WithdrawModel.fromJson(e.data())).toList());
   }
 
 

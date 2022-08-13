@@ -5,7 +5,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:icbapps/helper/auth/auth.dart';
 import 'package:icbapps/models/ModelUser.dart';
+import 'package:icbapps/screens/dailywork/dailyworkscreen.dart';
+import 'package:icbapps/screens/history/historyscreen.dart';
 import 'package:icbapps/screens/loginorsignup/loginorsignup.dart';
+import 'package:icbapps/screens/others/otherscreen.dart';
+import 'package:icbapps/screens/registration_int/registrationscreen.dart';
+import 'package:icbapps/screens/withdrawcash/withdrawcashscreen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -16,12 +21,19 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   ModelUser modelUser = ModelUser();
-  //FireBase fireBase = FireBase();
+  FireBase fireBase = FireBase();
 
   @override
   void initState() {
     //fireBase.myProfile();
-
+    /*fireBase.myProfileStream().listen((event) {
+      print(event.username);
+    });
+    fireBase.myProfile().then((value) {
+      this.setState(() {
+        modelUser = value;
+      });
+    });*/
     // TODO: implement initState
     super.initState();
   }
@@ -42,18 +54,23 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
 
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
+        body: StreamBuilder<ModelUser>(
+          stream: fireBase.myProfileStream(),
+          builder: (context, snapshot) {
+            return snapshot.hasData?Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
 
-            Container1(),
-            Container2(),
-            Container3()
+                Container1(modelUser: snapshot.data!,),
+                Container2(modelUser: snapshot.data!,),
+                Container3(modelUser: snapshot.data!,)
 
 
 
 
-          ],
+              ],
+            ):Center(child: CircularProgressIndicator(),);
+          }
         ),
 
       ),
@@ -62,7 +79,8 @@ class _HomeScreenState extends State<HomeScreen> {
 }
 
 class Container1 extends StatefulWidget {
-  const Container1({Key? key}) : super(key: key);
+  Container1({Key? key, required this.modelUser}) : super(key: key);
+  ModelUser modelUser;
 
   @override
   State<Container1> createState() => _Container1State();
@@ -75,11 +93,7 @@ class _Container1State extends State<Container1> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        FutureBuilder<ModelUser>(
-          future: fireBase.myProfile(),
-          builder: (context, snapshot) {
-
-            return snapshot.hasData?Container(
+        Container(
               height: 100,
               width: MediaQuery.of(context).size.width*.5,
               decoration: BoxDecoration(
@@ -88,14 +102,12 @@ class _Container1State extends State<Container1> {
               ),
               child: Center(
                 child: ListTile(
-                  title: Text("ID Name: ${snapshot.data?.fullName}"),
-                  leading: snapshot.data?.profileImage==null?CircleAvatar():CircleAvatar(backgroundImage: NetworkImage("${snapshot.data?.profileImage}"),),
-                  subtitle: Text("username: ${snapshot.data?.username}"),
+                  title: Text("ID Name: ${widget.modelUser.fullName}"),
+                  leading: widget.modelUser.profileImage==null?CircleAvatar():CircleAvatar(backgroundImage: NetworkImage("${widget.modelUser.profileImage}"),),
+                  subtitle: Text("username: ${widget.modelUser.username}"),
                 ),
               ),
-            ):CircularProgressIndicator();
-          }
-        ),
+            ),
         GestureDetector(
           child: Container(
             height: 100,
@@ -112,7 +124,8 @@ class _Container1State extends State<Container1> {
   }
 }
 class Container2 extends StatefulWidget {
-  const Container2({Key? key}) : super(key: key);
+  Container2({Key? key, required this.modelUser}) : super(key: key);
+  ModelUser modelUser;
 
   @override
   State<Container2> createState() => _Container2State();
@@ -128,22 +141,34 @@ class _Container2State extends State<Container2> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              TextButton(onPressed: (){}, child: Text("Daily work")),
+              TextButton(onPressed: (){
+                Navigator.of(context).push(MaterialPageRoute(builder: (context)=>DailyWork(modelUser: widget.modelUser,)));
+
+              }, child: Text("Daily work")),
               TextButton(onPressed: (){}, child: Text("Select Package")),
             ],
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              TextButton(onPressed: (){}, child: Text("History")),
-              TextButton(onPressed: (){}, child: Text("Registration")),
+              TextButton(onPressed: (){
+                Navigator.of(context).push(MaterialPageRoute(builder: (context)=>HistoryScreen(modelUser: widget.modelUser,)));
+              }, child: Text("History")),
+              TextButton(onPressed: (){
+                Navigator.of(context).push(MaterialPageRoute(builder: (context)=>Registration(modelUser: widget.modelUser)));
+
+              }, child: Text("Registration")),
             ],
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              TextButton(onPressed: (){}, child: Text("Withdraw")),
-              TextButton(onPressed: (){}, child: Text("Others")),
+              TextButton(onPressed: (){
+                Navigator.of(context).push(MaterialPageRoute(builder: (context)=>WithdrawCashScreen(modelUser: widget.modelUser)));
+              }, child: Text("Withdraw")),
+              TextButton(onPressed: (){
+                Navigator.of(context).push(MaterialPageRoute(builder: (context)=>OtherScreen()));
+              }, child: Text("Others")),
             ],
           ),
 
@@ -155,7 +180,8 @@ class _Container2State extends State<Container2> {
 }
 
 class Container3 extends StatefulWidget {
-  const Container3({Key? key}) : super(key: key);
+  Container3({Key? key, required this.modelUser}) : super(key: key);
+  ModelUser modelUser;
 
   @override
   State<Container3> createState() => _Container3State();

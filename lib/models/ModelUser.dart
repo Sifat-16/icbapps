@@ -7,6 +7,10 @@ class ModelUser{
   String? profileImage;
   List<String> teamMember=[];
   double balance=0.0;
+  double workbonus = 0.0;
+  double withdrawal = 0.0;
+  double reference = 0.0;
+
 
   ModelUser({this.username, this.uid, this.email, this.fullName, this.refarralId, this.profileImage});
 
@@ -20,7 +24,10 @@ class ModelUser{
       "refarralId":refarralId,
       "profileImage":profileImage,
       "teamMember":teamMember,
-      "balance":balance
+      "balance":balance,
+      "workbonus":workbonus,
+      "withdrawal":withdrawal,
+      "reference":reference
     };
   }
 
@@ -77,6 +84,27 @@ class ModelUser{
       balance = json["balance"];
     }catch(e){
       print("balance");
+    }
+    try{
+
+      workbonus = json["workbonus"];
+
+    }catch(e){
+
+    }
+    try{
+
+      withdrawal = json["withdrawal"];
+
+    }catch(e){
+
+    }
+    try{
+
+      reference = json["reference"];
+
+    }catch(e){
+
     }
 
 

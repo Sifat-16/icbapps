@@ -39,6 +39,7 @@ dependencies:
   firebase_storage: ^10.3.4
   cloud_firestore: ^3.4.3
   file_picker: ^5.0.1
+  google_mobile_ads: ^2.0.0
 
 dev_dependencies:
   flutter_test:
