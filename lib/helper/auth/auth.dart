@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:icbapps/models/ModelUser.dart';
+import 'package:icbapps/models/RechargeModel.dart';
 import '../../models/WithdrawModel.dart';
 
 class FireBase{
@@ -129,6 +130,10 @@ class FireBase{
     });
   }
 
+  Future<bool>rechargeTobalance(String amount, String transactionId)async{
+    final x = await store.collection("recharges").doc().set(RechargeModel(uid: auth.currentUser!.uid, amount: amount, transactionId: transactionId).toJson()).onError((error, stackTrace) => false);
+    return true;
+  }
 
 
 }
