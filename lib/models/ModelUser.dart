@@ -10,6 +10,7 @@ class ModelUser{
   double workbonus = 0.0;
   double withdrawal = 0.0;
   double reference = 0.0;
+  DateTime? lastWithdraw;
 
 
   ModelUser({this.username, this.uid, this.email, this.fullName, this.refarralId, this.profileImage});
@@ -27,7 +28,8 @@ class ModelUser{
       "balance":balance,
       "workbonus":workbonus,
       "withdrawal":withdrawal,
-      "reference":reference
+      "reference":reference,
+      "lastWithdraw":lastWithdraw
     };
   }
 
@@ -105,6 +107,14 @@ class ModelUser{
 
     }catch(e){
 
+    }
+
+    try{
+      //print(json["lastWithdraw"]);
+      lastWithdraw = DateTime.fromMillisecondsSinceEpoch(json["lastWithdraw"].seconds*1000);
+
+    }catch(e){
+      print("getting problem");
     }
 
 

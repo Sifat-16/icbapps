@@ -57,17 +57,13 @@ class _HomeScreenState extends State<HomeScreen> {
         body: StreamBuilder<ModelUser>(
           stream: fireBase.myProfileStream(),
           builder: (context, snapshot) {
+           // print(snapshot.data!.lastWithdraw);
             return snapshot.hasData?Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-
                 Container1(modelUser: snapshot.data!,),
                 Container2(modelUser: snapshot.data!,),
                 Container3(modelUser: snapshot.data!,)
-
-
-
-
               ],
             ):Center(child: CircularProgressIndicator(),);
           }

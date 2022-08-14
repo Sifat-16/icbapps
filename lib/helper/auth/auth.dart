@@ -1,11 +1,9 @@
 import 'dart:io';
 import 'dart:math';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:icbapps/models/ModelUser.dart';
-
 import '../../models/WithdrawModel.dart';
 
 class FireBase{
@@ -107,7 +105,8 @@ class FireBase{
     }
 
     await x.update({
-      "balance":l
+      "balance":l,
+      "workbonus" : y.data()!["workbonus"]+500
     }).onError((error, stackTrace) => false);
 
     return true;
@@ -121,6 +120,13 @@ class FireBase{
 
   Stream<List<WithdrawModel>> allwithdraws(ModelUser modelUser){
     return store.collection("withdraws").where("uid", isEqualTo: modelUser.uid).snapshots().map((event) => event.docs.map((e) => WithdrawModel.fromJson(e.data())).toList());
+  }
+
+  addLastWithdraw()async{
+    final z = store.collection("userProfile").doc(auth.currentUser!.uid);
+    await z.update({
+      "lastWithdraw":DateTime.now()
+    });
   }
 
 

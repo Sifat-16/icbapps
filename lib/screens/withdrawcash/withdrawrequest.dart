@@ -20,13 +20,21 @@ class _WithDrawRequestState extends State<WithDrawRequest> {
   FireBase fireBase = FireBase();
 
   @override
+  void initState() {
+    // TODO: implement initState
+    //print(widget.modelUser.lastWithdraw);
+    //print(DateTime.now().difference(widget.modelUser.lastWithdraw!).inDays);
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text("Withdraw Request"),
       ),
 
-      body: Column(
+      body: widget.modelUser.lastWithdraw==null||DateTime.now().difference(widget.modelUser.lastWithdraw!).inDays>30?Column(
         children: [
           Text("Your current balance: ${widget.modelUser.balance}"),
           TextField(
@@ -82,8 +90,12 @@ class _WithDrawRequestState extends State<WithDrawRequest> {
                       result = value;
                     });
                   });
-
-
+                  fireBase.addLastWithdraw();
+                  fireBase.myProfile().then((value){
+                    this.setState(() {
+                      widget.modelUser = value;
+                    });
+                  });
 
             }, child: Text("Withdraw")),
           ),
@@ -95,7 +107,7 @@ class _WithDrawRequestState extends State<WithDrawRequest> {
 
 
         ],
-      ),
+      ):Center(child: Text("Cant withdraw now"),),
     );
   }
 }
