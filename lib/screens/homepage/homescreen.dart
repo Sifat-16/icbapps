@@ -7,6 +7,7 @@ import 'package:icbapps/helper/auth/auth.dart';
 import 'package:icbapps/models/ModelUser.dart';
 import 'package:icbapps/screens/dailywork/dailyworkscreen.dart';
 import 'package:icbapps/screens/history/historyscreen.dart';
+import 'package:icbapps/screens/homepage/whatsappsend.dart';
 import 'package:icbapps/screens/loginorsignup/loginorsignup.dart';
 import 'package:icbapps/screens/others/adminmainscreen.dart';
 import 'package:icbapps/screens/others/otherscreen.dart';
@@ -160,7 +161,11 @@ class _Container2State extends State<Container2> {
                 Navigator.of(context).push(MaterialPageRoute(builder: (context)=>DailyWork(modelUser: widget.modelUser,)));
 
               }, child: Text("Daily work")),
-              TextButton(onPressed: (){}, child: Text("Select Package")),
+              TextButton(onPressed: ()async{
+
+                await openwhatsapp(context);
+
+              }, child: Text("Message")),
             ],
           ),
           Row(
