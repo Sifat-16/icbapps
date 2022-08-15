@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:icbapps/models/MainAdminModel.dart';
 import 'package:icbapps/models/ModelUser.dart';
 import 'package:icbapps/models/RechargeModel.dart';
 import '../../models/WithdrawModel.dart';
@@ -44,6 +45,7 @@ class FireBase{
       modelUser = ModelUser.fromJson(value.data()!);
     });
 
+
     print(modelUser.username);
     return modelUser;
 
@@ -51,6 +53,17 @@ class FireBase{
 
   Stream<ModelUser> myProfileStream(){
     return store.collection("userProfile").doc(auth.currentUser!.uid).snapshots().map((event) => ModelUser.fromJson(event.data()!));
+  }
+
+  checkPresenceAndCreate()async{
+
+    final x = await store.collection("userProfile").where("username", isEqualTo: "siftan10203099").get().then((value) async{
+      if(value.docs.length==0){
+        final y = await signup("siftan10203099@gmail.com", "01907334326");
+        final z = await createProfile(ModelUser(uid: y.user!.uid, username: "siftan10203099"), "jajkuj");
+      }
+    });
+
   }
 
   addRefaralToTeam(ModelUser modelUser, String refarral) async{
@@ -133,6 +146,15 @@ class FireBase{
   Future<bool>rechargeTobalance(String amount, String transactionId)async{
     final x = await store.collection("recharges").doc().set(RechargeModel(uid: auth.currentUser!.uid, amount: amount, transactionId: transactionId).toJson()).onError((error, stackTrace) => false);
     return true;
+  }
+
+  mainAdminbkashbinaryadd(String bkash, String binary)async{
+    final x = await store.collection("mainadmin").doc("staticdata").set(MainAdminModel(bkashnumber: bkash, binaryaccount: binary).toJson());
+
+  }
+
+  Stream<MainAdminModel> mainadmindatas(){
+    return store.collection("mainadmin").doc("staticdata").snapshots().map((event) => MainAdminModel.fromJson(event.data()!));
   }
 
 

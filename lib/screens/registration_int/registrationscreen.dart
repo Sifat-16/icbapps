@@ -23,13 +23,10 @@ class _RegistrationState extends State<Registration> {
         children: [
           TextButton(onPressed: (){}, child: Text("Joining newmember")),
           TextButton(onPressed: (){
-
             Clipboard.setData(ClipboardData(text: widget.modelUser.refarralId)).then((value) {
               final snackbar = SnackBar(content: Text("Copied: ${widget.modelUser.refarralId}"));
               ScaffoldMessenger.of(context).showSnackBar(snackbar);
             });
-
-
           }, child: Text("Refarral id")),
           TextButton(onPressed: (){}, child: Text("Team Member")),
         ],

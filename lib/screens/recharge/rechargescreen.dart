@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:icbapps/helper/auth/auth.dart';
+import 'package:icbapps/models/MainAdminModel.dart';
 
 class RechargeScreen extends StatefulWidget {
   const RechargeScreen({Key? key}) : super(key: key);
@@ -20,7 +21,13 @@ class _RechargeScreenState extends State<RechargeScreen> {
       ),
       body: Column(
         children: [
-          Text("Send Money to this number 01999999999"),
+          StreamBuilder<MainAdminModel>(
+            stream: fireBase.mainadmindatas(),
+            builder: (context, snapshot) {
+              return snapshot.hasData?Text("Send Money to this number ${snapshot.data!.bkashnumber}"):CircularProgressIndicator();
+
+            }
+          ),
           TextField(
             controller: amount,
             keyboardType: TextInputType.number,

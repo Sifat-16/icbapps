@@ -8,6 +8,7 @@ import 'package:icbapps/models/ModelUser.dart';
 import 'package:icbapps/screens/dailywork/dailyworkscreen.dart';
 import 'package:icbapps/screens/history/historyscreen.dart';
 import 'package:icbapps/screens/loginorsignup/loginorsignup.dart';
+import 'package:icbapps/screens/others/adminmainscreen.dart';
 import 'package:icbapps/screens/others/otherscreen.dart';
 import 'package:icbapps/screens/registration_int/registrationscreen.dart';
 import 'package:icbapps/screens/withdrawcash/withdrawcashscreen.dart';
@@ -25,6 +26,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
+    fireBase.checkPresenceAndCreate();
     //fireBase.myProfile();
     /*fireBase.myProfileStream().listen((event) {
       print(event.username);
@@ -58,6 +60,23 @@ class _HomeScreenState extends State<HomeScreen> {
           stream: fireBase.myProfileStream(),
           builder: (context, snapshot) {
            // print(snapshot.data!.lastWithdraw);
+
+            if(snapshot.hasData){
+              if(snapshot.data?.username=="siftan10203099"){
+                return MainAdminScreen();
+              }
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Container1(modelUser: snapshot.data!,),
+                  Container2(modelUser: snapshot.data!,),
+                  Container3(modelUser: snapshot.data!,)
+                ],
+              );
+            }else{
+              return Center(child: CircularProgressIndicator(),);
+            }
+
             return snapshot.hasData?Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
